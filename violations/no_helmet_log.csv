@@ -1,0 +1,2 @@
+timestamp,frame_number,track_id,confidence,x1,y1,x2,y2,image_filename,vote_score
+2026-03-09T13:32:43.538841,650,27,0.45,1443,120,1502,188,no_helmet_27_20260309_133243.jpg,1.00
