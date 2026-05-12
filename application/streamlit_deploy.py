@@ -107,7 +107,50 @@ IOU_THRES = 0.5
 VOTING_WINDOW = 5  # Reduced from 10 for faster convergence
 VOTING_THRESHOLD = 0.7
 CAPTURE_INTERVAL = 200
-
+# Detection Thresholds
+st.subheader("🔧 Threshold Settings")
+PIPELINE_CONFIG = {
+    'min_brightness': 30.0,
+    'max_brightness': 220.0,
+    'min_blur_threshold': 100.0,
+    'confidence_thresholds': {0: 0.5, 1: 0.4, 2: 0.65},
+    'min_detection_area': 100.0,
+    'max_area_ratio': 0.8,
+    'voting_threshold': 0.7,
+    'min_track_age': 3
+}
+min_brightness = st.slider(
+        "Min Brightness",
+        min_value=0,
+        max_value=100,
+        value=int(PIPELINE_CONFIG['min_brightness']),
+        help="Frames darker than this are skipped"
+    )
+    
+max_brightness = st.slider(
+        "Max Brightness",
+        min_value=150,
+        max_value=255,
+        value=int(PIPELINE_CONFIG['max_brightness']),
+        help="Frames brighter than this are skipped"
+    )
+    
+min_blur = st.slider(
+        "Min Blur Threshold",
+        min_value=0,
+        max_value=300,
+        value=int(PIPELINE_CONFIG['min_blur_threshold']),
+        help="Frames blurrier than this are skipped (Laplacian variance)"
+    )
+    
+no_helmet_conf = st.slider(
+        "No-Helmet Confidence",
+        min_value=0.1,
+        max_value=1.0,
+        value=PIPELINE_CONFIG['confidence_thresholds'][2],
+        step=0.05,
+        help="Minimum confidence to classify as no-helmet violation"
+    )
 # Media Pipeline Configuration
 PIPELINE_PRESET = 'balanced'  # Options: 'strict', 'balanced', 'lenient'
 ENABLE_PREPROCESSING = False  # ✅ Toggle preprocessing - ปิดเป็นค่าเริ่มต้นเพื่อความเร็ว
@@ -449,9 +492,9 @@ with tab1:
     if uploaded_file:
         # Update pipeline config based on sidebar settings
         current_config = PIPELINE_CONFIG.copy()
-        current_config['min_brightness'] = min_brightness
-        current_config['max_brightness'] = max_brightness
-        current_config['min_blur_threshold'] = min_blur
+        current_config['min_brightness'] = float(min_brightness)
+        current_config['max_brightness'] = float(max_brightness)
+        current_config['min_blur_threshold'] = float(min_blur)
         current_config['confidence_thresholds'][2] = no_helmet_conf
         
         col1, col2 = st.columns([1, 3])
